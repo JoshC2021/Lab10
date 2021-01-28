@@ -10,7 +10,7 @@ namespace MovieLists
         {
                 new Movie("Bambi","animated"),
                 new Movie("Peter Pan","animated"),
-                new Movie("Shininh","horror"),
+                new Movie("The Shining","horror"),
                 new Movie("IT","horror"),
                 new Movie("Get Out","horror"),
                 new Movie("The Godfather","drama"),
@@ -18,8 +18,9 @@ namespace MovieLists
                 new Movie("Star Wars","scifi"),
                 new Movie("Blade Runner","scifi"),
                 new Movie("Ready Player One","scifi"),
-
         };
+
+        public static List<string> uniqueCategories = new List<string>();
 
         static void Main(string[] args)
         {
@@ -35,47 +36,95 @@ namespace MovieLists
 
         public static void Update()
         {
-            DisplayCategory(GetCategory());
+            DisplayEachCategory();
+            DisplayChosenMovies(GetCategory());
         }
 
-        public static string GetCategory()
+        public static int GetCategory()
         {
-            Console.Write("What category are you interested in?: ");
+            Console.Write("Please enter the number of the category you are interested in: ");
             string input = Console.ReadLine().ToLower().Trim();
-            if (input.Any())
+            int categoryNumber = -1;
+            try
             {
-                return input;
+                if (input.Any())
+                {
+                    categoryNumber = int.Parse(input) - 1;
+                    if(categoryNumber >= uniqueCategories.Count || categoryNumber <0)
+                    {
+                        throw new Exception("No category in that range, please try again.");
+                    }
+                }
+                else
+                {
+                    throw new Exception("No category detected, please try again.");
+                }
             }
-            else
+            catch(FormatException)
             {
-                Console.WriteLine("No category detected, please try again.");
+                Console.WriteLine("Not a valid number, please try again");
                 GetCategory();
             }
-            return input; // do not know more meaningful way to make compiler stop complaining
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                GetCategory();
+            }
+
+            return categoryNumber;
         }
 
-        public static void DisplayCategory(string s)
+        public static void DisplayChosenMovies(int c)
         {
-            bool foundMovie = false;
+            List<string> orderedMovies = new List<string>();
             for(int i = 0; i<myMovies.Count;i++)
             {
-                if(myMovies[i].Category == s)
+                if(myMovies[i].Category == uniqueCategories[c])
                 {
-                    Console.WriteLine(myMovies[i].Title);
-                    foundMovie = true;
+                    orderedMovies.Add(myMovies[i].Title);
                 }
             }
 
-            if(!foundMovie)
+            orderedMovies.Sort();
+            
+            foreach(string s in orderedMovies)
             {
-                Console.WriteLine($"Sorry, no movie of the {s} category was found");
+                Console.WriteLine(s);
             }
         }
+
+        public static void DisplayEachCategory()
+        {
+            bool doesExsist;
+            for(int i = 0; i<myMovies.Count;i++)
+            {
+                doesExsist = false;
+                for(int j = 0; j<uniqueCategories.Count;j++)
+                {
+                    if(uniqueCategories[j] == myMovies[i].Category)
+                    {
+                        doesExsist = true;
+                    }
+                }
+
+                if(!doesExsist)
+                {
+                    uniqueCategories.Add(myMovies[i].Category);
+                }
+            }
+            Console.WriteLine("\nThe list has the following categories: ");
+            for(int i = 0; i< uniqueCategories.Count;i++)
+            {
+                Console.WriteLine($"{i+1}) {uniqueCategories[i]}");
+            }
+        }
+
+
         // identifies if the user wants to continue to get info
         public static bool GoAgain()
         {
             Console.WriteLine();
-            Console.Write("Would you like to learn more? (enter \"yes\" or \"no\"): ");
+            Console.Write("Continue? (enter \"yes\" or \"no\"): ");
             string input = Console.ReadLine().ToLower().Trim();
             try
             {
