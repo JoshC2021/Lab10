@@ -40,6 +40,9 @@ namespace MovieLists
             DisplayChosenMovies(GetCategory());
         }
 
+
+        // grabs an integer from the user through exceptions
+        // returns integer which is the index of the category in uniqueCategory list
         public static int GetCategory()
         {
             Console.Write("Please enter the number of the category you are interested in: ");
@@ -47,10 +50,10 @@ namespace MovieLists
             int categoryNumber = -1;
             try
             {
-                if (input.Any())
+                if (input.Any()) // checks to see if user entered anything
                 {
                     categoryNumber = int.Parse(input) - 1;
-                    if(categoryNumber >= uniqueCategories.Count || categoryNumber <0)
+                    if(categoryNumber >= uniqueCategories.Count || categoryNumber <0) // choice has to be within range
                     {
                         throw new Exception("No category in that range, please try again.");
                     }
@@ -60,7 +63,7 @@ namespace MovieLists
                     throw new Exception("No category detected, please try again.");
                 }
             }
-            catch(FormatException)
+            catch(FormatException) 
             {
                 Console.WriteLine("Not a valid number, please try again");
                 GetCategory();
@@ -74,6 +77,8 @@ namespace MovieLists
             return categoryNumber;
         }
 
+        // prints all of the movies of the chosen category to the console
+        // uses built in sort method prior to printing to order the movies
         public static void DisplayChosenMovies(int c)
         {
             List<string> orderedMovies = new List<string>();
@@ -93,9 +98,13 @@ namespace MovieLists
             }
         }
 
+        // builds a unique list of each category in movie library
+        // then displays the categories to the user via the console
         public static void DisplayEachCategory()
         {
             bool doesExsist;
+            // looks at each movie and sees if category is added to the unique list 
+            // of all the categories yet and adds if not present
             for(int i = 0; i<myMovies.Count;i++)
             {
                 doesExsist = false;
@@ -120,7 +129,7 @@ namespace MovieLists
         }
 
 
-        // identifies if the user wants to continue to get info
+        // identifies if the user wants to continue with format exceptions
         public static bool GoAgain()
         {
             Console.WriteLine();
