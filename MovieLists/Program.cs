@@ -45,33 +45,39 @@ namespace MovieLists
         // returns integer which is the index of the category in uniqueCategory list
         public static int GetCategory()
         {
-            Console.Write("Please enter the number of the category you are interested in: ");
-            string input = Console.ReadLine().ToLower().Trim();
+           
             int categoryNumber = -1;
-            try
+            bool needCategory = true;
+            while (needCategory)
             {
-                if (input.Any()) // checks to see if user entered anything
+                Console.Write("Please enter the number of the category you are interested in: ");
+                string input = Console.ReadLine().ToLower().Trim();
+                try
                 {
-                    categoryNumber = int.Parse(input) - 1;
-                    if(categoryNumber >= uniqueCategories.Count || categoryNumber <0) // choice has to be within range
+                    if (input.Any()) // checks to see if user entered anything
                     {
-                        throw new Exception("No category in that range, please try again.");
+                        categoryNumber = int.Parse(input) - 1;
+                        if (categoryNumber >= uniqueCategories.Count || categoryNumber < 0) // choice has to be within range
+                        {
+                            throw new Exception("No category in that range, please try again.");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("No category detected, please try again.");
                     }
                 }
-                else
+                catch (FormatException)
                 {
-                    throw new Exception("No category detected, please try again.");
+                    Console.WriteLine("Not a valid number, please try again");
+                    continue;
                 }
-            }
-            catch(FormatException) 
-            {
-                Console.WriteLine("Not a valid number, please try again");
-                GetCategory();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-                GetCategory();
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    continue;
+                }
+                needCategory = false;
             }
 
             return categoryNumber;
@@ -132,34 +138,41 @@ namespace MovieLists
         // identifies if the user wants to continue with format exceptions
         public static bool GoAgain()
         {
-            Console.WriteLine();
-            Console.Write("Continue? (enter \"yes\" or \"no\"): ");
-            string input = Console.ReadLine().ToLower().Trim();
-            try
+            
+            bool needGo = true;
+            while (needGo)
             {
-                if (input != "yes")
+                Console.WriteLine();
+                Console.Write("Continue? (enter \"yes\" or \"no\"): ");
+                string input = Console.ReadLine().ToLower().Trim();
+                try
                 {
-                    if (input != "no")
+                    if (input != "yes")
                     {
-                        throw new Exception("Invalid response, please try again");
+                        if (input != "no")
+                        {
+                            throw new Exception("Invalid response, please try again");
+                        }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                GoAgain();
-            }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    continue;
+                }
 
-            if (input == "yes")
-            {
-                return true;
+                if (input == "yes")
+                {
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Goodbye");
+                    return false;
+                }
+                needGo = false;
             }
-            else
-            {
-                Console.WriteLine("Goodbye");
-                return false;
-            }
+            return true;
         }
     }
 }
